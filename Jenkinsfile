@@ -44,10 +44,10 @@ pipeline{
         stage ("sonarQuality gate"){
             steps{
                 script{
-                    waitforQualityGate abortPipeline: false credentialsId: 'sonartoken'{
+                    waitforQualityGate abortPipeline: false credentialsId: 'sonartoken'
                     }
                 }
             }
         }
     }
-}
+
