@@ -30,11 +30,5 @@ pipeline{
                sh "mvn test"
             }
         }
-
-        stage (""){
-            steps{
-                
-            }
-        }
     }
 }
