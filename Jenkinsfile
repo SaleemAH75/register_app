@@ -59,6 +59,13 @@ pipeline{
             }   
         }
 
+     stage("Debug WAR File") {
+    steps {
+        sh "echo 'Listing contents of target directory...'"
+        sh "ls -lh target/"
+    }
+}
+
      stage("Build & Push Docker Image") {
     steps {
         script {
