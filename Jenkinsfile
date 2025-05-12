@@ -35,13 +35,6 @@ pipeline{
             }
         }
 
-        stage("Check Project Type") {
-    steps {
-        sh "cat pom.xml | grep -i '<packaging>' || echo 'No packaging tag found'"
-    }
-}
-
-
         stage ("Test Application"){
             steps{
                sh "mvn test"
@@ -66,13 +59,6 @@ pipeline{
             }   
         }
 
-     stage("Debug WAR File") {
-    steps {
-        sh "echo 'Listing contents of target directory...'"
-        sh "ls -lh target/"
-    }
-}
-
      stage("Build & Push Docker Image") {
     steps {
         script {
@@ -83,6 +69,23 @@ pipeline{
                 dockerImage.push()
                 dockerImage.push('latest')
                     }
+                }
+            }
+        }
+
+        stage("trivy scan"){
+            steps{
+                script{
+                    sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image saleem45/register:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                }
+            }
+        }
+
+        stage("cleanup artifacts"){
+            steps{
+                script{
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_NAME}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
                 }
             }
         }
