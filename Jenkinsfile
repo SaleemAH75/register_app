@@ -59,17 +59,18 @@ pipeline{
             }   
         }
 
-     stage("Build & Push Docker Iamge") {
-        steps{
-          script{
-            docker.withRegistry('', DOCKER_PASS)
-            docker_image=docker.build "${IMAGE_NAME}"
-          }
-          docker.withRegistry('', DOCKER_PASS){
-            docker_image.push "${IMAGE_TAG}"
-            docker_image.push('latest')
-          }
+     stage("Build & Push Docker Image") {
+    steps {
+        script {
+            def imageTag = "${RELEASE}-${env.BUILD_NUMBER}"
+            def dockerImage = docker.build("${IMAGE_NAME}:${imageTag}")
+
+            docker.withRegistry('', DOCKER_PASS) {
+                dockerImage.push()
+                dockerImage.push('latest')
+                    }
+                }
+            }
         }
-      }
     }
 }
