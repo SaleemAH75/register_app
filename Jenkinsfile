@@ -35,6 +35,13 @@ pipeline{
             }
         }
 
+        stage("Check Project Type") {
+    steps {
+        sh "cat pom.xml | grep -i '<packaging>' || echo 'No packaging tag found'"
+    }
+}
+
+
         stage ("Test Application"){
             steps{
                sh "mvn test"
